@@ -1,0 +1,26 @@
+{
+  "name": "@base-template/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "devDependencies": {
+    "typescript": "catalog:",
+    "@base-template/config": "workspace:*"
+  },
+  "dependencies": {
+    "better-auth": "catalog:",
+    "@polar-sh/better-auth": "catalog:",
+    "@polar-sh/sdk": "^0.34.16",
+    "dotenv": "catalog:",
+    "zod": "catalog:",
+    "@base-template/env": "workspace:*",
+    "@base-template/db": "workspace:*"
+  }
+}
