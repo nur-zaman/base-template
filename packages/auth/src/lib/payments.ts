@@ -1,7 +1,9 @@
-import { env } from "@base-template/env/server";
+import { env, isPolarEnabled } from "@base-template/env/server";
 import { Polar } from "@polar-sh/sdk";
 
-export const polarClient = new Polar({
-  accessToken: env.POLAR_ACCESS_TOKEN,
-  server: "sandbox",
-});
+export const polarClient = isPolarEnabled
+  ? new Polar({
+      accessToken: env.POLAR_ACCESS_TOKEN!,
+      server: "sandbox",
+    })
+  : null;

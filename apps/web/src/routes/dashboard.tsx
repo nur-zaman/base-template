@@ -9,8 +9,8 @@ export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
   beforeLoad: async () => {
     const session = await getUser();
-    const customerState = await getPayment();
-    return { session, customerState };
+    const paymentState = await getPayment();
+    return { session, paymentState };
   },
   loader: async ({ context }) => {
     if (!context.session) {
@@ -22,33 +22,38 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 function RouteComponent() {
-  const { session, customerState } = Route.useRouteContext();
+  const { session, paymentState } = Route.useRouteContext();
 
-  const hasProSubscription = (customerState?.activeSubscriptions?.length ?? 0) > 0;
-  // For debugging: console.log("Active subscriptions:", customerState?.activeSubscriptions);
+  const hasProSubscription = paymentState.enabled
+    ? (paymentState.customerState?.activeSubscriptions?.length ?? 0) > 0
+    : false;
 
   return (
     <div>
       <h1>Dashboard</h1>
       <p>Welcome {session?.user.name}</p>
-      <p>Plan: {hasProSubscription ? "Pro" : "Free"}</p>
-      {hasProSubscription ? (
-        <Button
-          onClick={async function handlePortal() {
-            await authClient.customer.portal();
-          }}
-        >
-          Manage Subscription
-        </Button>
-      ) : (
-        <Button
-          onClick={async function handleUpgrade() {
-            await authClient.checkout({ slug: "pro" });
-          }}
-        >
-          Upgrade to Pro
-        </Button>
-      )}
+      {paymentState.enabled ? (
+        <>
+          <p>Plan: {hasProSubscription ? "Pro" : "Free"}</p>
+          {hasProSubscription ? (
+            <Button
+              onClick={async function handlePortal() {
+                await authClient.customer.portal();
+              }}
+            >
+              Manage Subscription
+            </Button>
+          ) : (
+            <Button
+              onClick={async function handleUpgrade() {
+                await authClient.checkout({ slug: "pro" });
+              }}
+            >
+              Upgrade to Pro
+            </Button>
+          )}
+        </>
+      ) : null}
     </div>
   );
 }
